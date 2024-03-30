@@ -152,7 +152,7 @@ figure3c_encounters_overtime <-
                     name = "") +
   xlab("Month") +
   ylab("Encounter count") +
-  #ggtitle("C") +
+  ggtitle("C") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
