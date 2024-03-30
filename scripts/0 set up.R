@@ -6,7 +6,6 @@
 #............................................................
 
 #data, visualization
-library(readr)
 library(ggplot2)
 # #library(khroma)          #colour blind friendly colour palette
 library(dplyr)           #data wrangling
@@ -25,7 +24,8 @@ library(sf)              #spatial data
 # #analysis
 # library(devtools)
 # #if the ctmm package needs to be updated
-# #devtools::install_github("ctmm-initiative/ctmm", force = TRUE) 
+devtools::install_github("ctmm-initiative/ctmm", force = TRUE)
+remotes::install_github("ctmm-initiative/ctmm", force = TRUE)
 library(ctmm)            #continuous-time movement models
 library(lme4)            #pairwise sex test to see if differences are significant using glmer()
 library(glmmTMB)         #beta distribution
@@ -38,54 +38,56 @@ library(corrMove)        #correlative movement
 # Data ----
 #............................................................
 
-getwd()
+#anteater data
+load("data/anteater/anteater_data.rda")
+load("data/anteater/bio_data.rda")
+load("data/anteater/telemetry_data.rda")
 
-#load data
-GPS_df <- readRDS("data/rds/GPS_df.rds")
-bio_df <- readRDS("data/rds/bio_df.rds")
-DATA_TELEMETRY <- readRDS("data/rds/DATA_TELEMETRY.rds")
+#movement models and home range estimate
+load("data/anteater_fit.rda")
+load("data/anteater_akdes.rda")
 
-#load movement models
-FIT <- readRDS("data/FIT.rds")
+#home range
+load("data/home_range/HR_size.rda")
+load("data/home_range/AKDE_1.rda")
+load("data/home_range/AKDE_2.rda")
+load("data/home_range/overlap_1_df.rda")
+load("data/home_range/overlap_2_df.rda")
+load("data/home_range/overlap_df.rda")
 
-#load home range estimates
-AKDE <- readRDS("data/AKDE.rds")
-AKDE_1 <- readRDS("rds/AKDE_1.rds")
-AKDE_2 <- readRDS("rds/AKDE_2.rds")
-AKDE_male <- readRDS("rds/AKDE_male.rds")
-AKDE_female <- readRDS("rds/AKDE_female.rds")
+#encounters
+load("data/encounter/proximity_df.rda")
+load("data/encounter/distance_df.rda")
+encounter_radius_df <- readRDS("data/encounter/encounter_radius_df.RDS")
+load("data/encounter/proximity_identified_pairs_df.rda")
+distance_pairs_df <- readRDS("data/encounter/distance_pairs_df.RDS")
 
-#load home range size
-HR_size <- readRDS("rds/HR_size.rds")
+#correlative movement data
+cm_pair1 <- readRDS("data/correlative_movement/cm_pair1.RDS")
+cm_pair2 <- readRDS("data/correlative_movement/cm_pair2.RDS")
+cm_pair3 <- readRDS("data/correlative_movement/cm_pair3.RDS")
+cm_pair4 <- readRDS("data/correlative_movement/cm_pair4.RDS")
+cm_pair5 <- readRDS("data/correlative_movement/cm_pair5.RDS")
+cm_pair6 <- readRDS("data/correlative_movement/cm_pair6.RDS")
+cm_pair7 <- readRDS("data/correlative_movement/cm_pair7.RDS")
+cm_pair8 <- readRDS("data/correlative_movement/cm_pair8.RDS")
+cm_pair9 <- readRDS("data/correlative_movement/cm_pair9.RDS")
+cm_pair10 <- readRDS("data/correlative_movement/cm_pair10.RDS")
+cm_pair11 <- readRDS("data/correlative_movement/cm_pair11.RDS")
+cm_pair12 <- readRDS("data/correlative_movement/cm_pair12.RDS")
 
-#load overlap estimates
-overlap_1_df <- readRDS("rds/overlap_1_df.rds")
-overlap_2_df <- readRDS("rds/overlap_2_df.rds")
-overlap_df <- readRDS("rds/overlap_df.rds")
 
-#load proximity data
-proximity_df <- readRDS("rds/proximity_df.rds")
+#............................................................
+# Adults only ----
+#............................................................
 
-#load distance data
-distance_df <- readRDS("data/rds/distance_df.rds")
+bio_data <- bio_data[-c(3,12,14,20),]
+DATA_TELEMETRY <- DATA_TELEMETRY[-c(3,12,14,20)]
+FIT <- FIT[-c(3,12,14,20)]
+AKDE <- AKDE[-c(3,12,14,20)]
+load("data/home_range/HR_size_adult.rda")
+overlap_df <- readRDS("data/home_range/overlap_data_adult.rds")
 
-#load pair data
-proximity_identified_pairs_df <- readRDS("RDS/proximity_identified_pairs_df.rds")
-distance_pairs_df <- readRDS("data/rds/distance_pairs_df.RDS")
-
-#load correlative movement data
-cm_pair1 <- readRDS("RDS/cm_pair1.RDS")
-cm_pair2 <- readRDS("RDS/cm_pair2.RDS")
-cm_pair3 <- readRDS("RDS/cm_pair3.RDS")
-cm_pair4 <- readRDS("RDS/cm_pair4.RDS")
-cm_pair5 <- readRDS("RDS/cm_pair5.RDS")
-cm_pair6 <- readRDS("RDS/cm_pair6.RDS")
-cm_pair7 <- readRDS("RDS/cm_pair7.RDS")
-cm_pair8 <- readRDS("RDS/cm_pair8.RDS")
-cm_pair9 <- readRDS("RDS/cm_pair9.RDS")
-cm_pair10 <- readRDS("RDS/cm_pair10.RDS")
-cm_pair11 <- readRDS("RDS/cm_pair11.RDS")
-cm_pair12 <- readRDS("RDS/cm_pair12.RDS")
 
 #............................................................
 # End
