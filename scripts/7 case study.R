@@ -1,4 +1,6 @@
 
+# Script description: investigate a deviated pair as a case study, investigate their home range overlap, proximity, encounters, correlative movement
+
 # Case study 
 # Margaret and Thomas
 
@@ -22,7 +24,7 @@ round(proximity_identified_pairs_df[11,]$overlap_est, 2)
 round(proximity_identified_pairs_df[11,]$overlap_high, 2)
 
 #............................................................
-# Proximity, encounters, correlated movement
+# Proximity, encounters, correlated movement ----
 #............................................................
 
 #calculate proximity ratio

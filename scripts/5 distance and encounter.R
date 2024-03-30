@@ -1,4 +1,6 @@
 
+# Script description: calculate the distances between individuals, sensitivity analysis, estimate encounters between individuals. encounter analysis
+
 # Encounters
 
 #............................................................
@@ -45,12 +47,12 @@ for (i in 1:nrow(overlap_df)) {
 DATA_DISTANCE <- do.call(rbind, RES)
 
 #save distance data
-saveRDS(DATA_DISTANCE, file = "data/rds/DATA_DISTANCE.rds")
+saveRDS(DATA_DISTANCE, file = "data/encounter/DATA_DISTANCE.rds")
 
 #............................................................
 
 #import the distance data
-DATA_DISTANCE <- readRDS("data/rds/DATA_DISTANCE.rds")
+DATA_DISTANCE <- readRDS("data/encounter/DATA_DISTANCE.rds")
 
 #locate NA values within the dataframe
 DATA_DISTANCE[!complete.cases(DATA_DISTANCE), ] #3,502,701 observations
@@ -63,7 +65,8 @@ distance_df <- relocate(distance_df, c(distance_low, distance_est, distance_high
                                        t, timestamp), .after = proximity_high)
 
 #save the distance dataframe
-saveRDS(distance_df, file = "data/rds/distance_df.rds")
+# save(distance_df, file = "data/encounter/distance_df.rda")
+load("data/encounter/distance_df.rda")
 
 #............................................................
 # Sensitivity analysis ----
@@ -82,7 +85,7 @@ for(i in 1:length(enc_radius)){
 #visualization
 plot(x = enc_radius, y = enc_count, type = "l")
 
-#.....
+#...................................................
 
 #sensitivity analysis on female-male encounter significance
 encounter_radius_pvalue <- vector("numeric", length(enc_radius))
@@ -122,7 +125,7 @@ encounter_radius_df <- data.frame(x = enc_radius,
                                   y = encounter_radius_pvalue)
 
 #save dataframe
-saveRDS(encounter_radius_df, file = "RDS/encounter_radius_df.RDS")
+saveRDS(encounter_radius_df, file = "data/encounter/encounter_radius_df.RDS")
 
 #visualization
 plot(y ~ x,
