@@ -33,7 +33,7 @@ anteater_data <- readRDS("data/anteater_data.rds")
 
 
 #import supplementary data containing biological information
-DATA_META <- read.csv("data/Anteater_Results_Final.csv")
+DATA_META <- read.csv("data/anteater/Anteater_Results_Final.csv")
 DATA_META$ID[DATA_META$ID == "Little Rick"] <- "Little_Rick"
 
 #subset biological data from supplementary data for 23 individuals
