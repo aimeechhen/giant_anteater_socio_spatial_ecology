@@ -1,23 +1,16 @@
 
+# Script description: extract the home range
 
-# Home Range Overlap
+library(ctmm)
+library(tidyverse)
 
-#............................................................
-# Estimating home range areas ----
-#............................................................
+calculate home range estimate using akde, extract home range estimates, create a pairwise overlap dataframe from their home range estimates for each individual, calculate their overlap values, home range and home range overlap analysis
 
-#calculate AKDE home range estimates based on the best fit model, create aligned UDs
-AKDE <- akde(DATA_TELEMETRY[1:23],FIT)
-overlap(AKDE)
-
-#save AKDE home range estimations
-# saveRDS(AKDE, file = "data/AKDE.rds")
-# AKDE <- readRDS("data/AKDE.rds")
-save(AKDE, file = "data/anteater_akdes.rda")
+load("data/anteater/bio_data.rda")
 load("data/anteater_akdes.rda")
 
 #............................................................
-# Home range results ----
+# Extract Home-range area estimates ----
 #............................................................
 
 #create a dataframe to store home range area statistics from the AKDE
@@ -35,14 +28,15 @@ for (i in 1:length(AKDE)) {
 row.names(HR_size) <- NULL
 
 #add biological data to dataframe
-HR_size <- cbind(HR_size, bio_df)
+HR_size <- cbind(HR_size, bio_data)
 HR_size <- relocate(HR_size, c(low, est, high), .after = Site)
-names(HR_size)[6] <- "HR_low"
-names(HR_size)[7] <- "HR_est"
-names(HR_size)[8] <- "HR_high"
+names(HR_size)[7] <- "HR_low"
+names(HR_size)[8] <- "HR_est"
+names(HR_size)[9] <- "HR_high"
 
 #save home range size results
-saveRDS(HR_size, file = "rds/HR_size.rds")
+# save(HR_size, file = "data/home_range/HR_size.rda")
+load("data/home_range/HR_size.rda")
 
 #............................................................
 
@@ -76,9 +70,34 @@ AKDE_sex_compare <- list(male = AKDE_male,
 COL_sex <- c("#004488", "#A50026")
 meta(AKDE_sex_compare, col = COL_sex, sort = TRUE)
 
-#save home range estimates
-saveRDS(AKDE_male, file = "rds/AKDE_male.rds")
-saveRDS(AKDE_female, file = "rds/AKDE_female.rds")
+
+#............................................................
+# Weight and home-range ----
+#............................................................
+
+# Is weight a factor in home-range size?
+
+#without luigi
+HR_size <- HR_size[HR_size$ID != "Luigi",]
+
+#compare model with and without weight as a variable
+HR_weight_test <- glmmTMB(HR_est ~ Weight + (1|Site), 
+                          family = Gamma(link = "log"), data = HR_size)
+HR_weight_test2 <- glmmTMB(HR_est ~ 1 + (1|Site), 
+                           family = Gamma(link = "log"), data = HR_size)
+
+HR_weight_test_results <- anova(HR_weight_test, HR_weight_test2)
+HR_weight_test_results
+
+#calculate weight impact via likelihood ratio test
+HR_weight_test_pvalue <- round(HR_weight_test_results$`Pr(>Chisq)`[2], 2)
+HR_weight_test_pvalue
+
+summary(HR_weight_test)
+
+plot(HR_size$HR_est ~ HR_size$Weight)
+
+
 
 #............................................................
 # Estimating home range overlap ----
@@ -94,8 +113,8 @@ AKDE_2 <- AKDE[c("Annie", "Beto", "Hannah", "Jane", "Larry",
                  "Thomas")]
 
 #save home range estimates for each site
-saveRDS(AKDE_1, file = "rds/AKDE_1.rds")
-saveRDS(AKDE_2, file = "rds/AKDE_2.rds")
+save(AKDE_1, file = "data/home_range/AKDE_1.rda")
+save(AKDE_2, file = "data/home_range/AKDE_2.rda")
 
 #calculate 95% AKDE home range overlap for a pairwise comparison for each site
 overlap_1 <- overlap(AKDE_1, level = 0.95)
@@ -228,10 +247,11 @@ overlap_df <- relocate(overlap_df, pair_ID, .before = anteater_A)
 rm(overlap_1_low, overlap_1_est, overlap_1_high,
    overlap_2_low, overlap_2_est, overlap_2_high)
 
+
 #save home range overlap dataframes
-saveRDS(object = overlap_2_df, file = "rds/overlap_1_df.rds")
-saveRDS(object = overlap_2_df, file = "rds/overlap_2_df.rds")
-saveRDS(object = overlap_df, file = "rds/overlap_df.rds")
+save(object = overlap_1_df, file = "data/home_range/overlap_1_df.rda")
+save(object = overlap_2_df, file = "data/home_range/overlap_2_df.rda")
+save(object = overlap_df, file = "data/home_range/overlap_df.rda")
 
 #............................................................
 # Home range overlap results ----
