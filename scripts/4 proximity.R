@@ -1,5 +1,6 @@
 
-# Proximity 
+# Script description: calculate the proximity of the individuals, proximity analysis
+
 #............................................................
 # Estimating proximity ratio ----
 #............................................................
@@ -58,7 +59,7 @@ for(i in 1:nrow(overlap_1)){
   overlap_1_df[i, c("proximity_high")] <- PROXIMITY_1[3]
   
   #save results to a csv file
-  write.csv(overlap_1_df, "data/DATA_proximity_1.csv", row.names = FALSE)
+  write.csv(overlap_1_df, "data/encounter/DATA_proximity_1.csv", row.names = FALSE)
   
   cat("finished index", i, "\n") # see the loop happening in real time
 }
@@ -95,15 +96,15 @@ for(i in 1:nrow(overlap_2_df)){
   overlap_2_df[i, c("proximity_high")] <- PROXIMITY_2[3]
   
   #save results in a csv file
-  write.csv(overlap_2_df, "data/DATA_proximity_2.csv", row.names = FALSE)
+  write.csv(overlap_2_df, "data/enocunter/DATA_proximity_2.csv", row.names = FALSE)
   cat("finished index", i, "\n") # see the loop happening in real time
 }
 
 #............................................................
 
 #import proximity data
-DATA_proximity_1 <- read_csv("data/DATA_proximity_1.csv")
-DATA_proximity_2 <- read_csv("data/DATA_proximity_2.csv")
+DATA_proximity_1 <- read.csv("data/encounter/DATA_proximity_1.csv")
+DATA_proximity_2 <- read.csv("data/encounter/DATA_proximity_2.csv")
 
 #correct mismatch entry
 DATA_proximity_1$anteater_A[DATA_proximity_1$anteater_A == "Little Rick"] <- "Little_Rick"
@@ -131,7 +132,8 @@ proximity_df <- left_join(overlap_df, proximity_df, by = c("anteater_A", "anteat
                                                            "site"))
 
 #save proximity dataframe
-saveRDS(proximity_df, file = "rds/proximity_df.rds")
+# save(proximity_df, file = "data/encounter/proximity_df.rda")
+load("data/encounter/proximity_df.rda")
 
 #............................................................
 # Proximity ratio results ----
@@ -147,3 +149,23 @@ prox_overlap_test <- glmer(proximity_est ~ overlap_est + (1|site), family = Gamm
 prox_overlap_test2 <- glmer(proximity_est ~ 1 + (1|site), family = Gamma(link = "log"), data = proximity_df)
 prox_overlap_test_results <- anova(prox_overlap_test, prox_overlap_test2)
 prox_overlap_test_pvalue <- round(prox_overlap_test_results$`Pr(>Chisq)`[2], 2) #p = 0.03
+
+#test for significance in sex, compare model with and without sex as a variable
+proximity_test <- glmer(proximity_est ~ sex_comparison + (1|site), 
+                        family = Gamma(link = "log"), data = proximity_df)
+proximity_test2 <- glmer(proximity_est ~ 1 + (1|site), 
+                         family = Gamma(link = "log"), data = proximity_df)
+proximity_test_results <- anova(proximity_test, proximity_test2)
+proximity_test_results
+proximity_test_pvalue <- round(proximity_test_results$`Pr(>Chisq)`[2], 2) #p = 0.13
+proximity_test_pvalue
+
+#test for significance in home-range overlap, compare model with and without overlap as a variable
+prox_overlap_test <- glmer(proximity_est ~ overlap_est + (1|site), 
+                           family = Gamma(link = "log"), data = proximity_df)
+prox_overlap_test2 <- glmer(proximity_est ~ 1 + (1|site), 
+                            family = Gamma(link = "log"), data = proximity_df)
+prox_overlap_test_results <- anova(prox_overlap_test, prox_overlap_test2)
+prox_overlap_test_results
+prox_overlap_test_pvalue <- round(prox_overlap_test_results$`Pr(>Chisq)`[2], 2) #p = 0.03
+prox_overlap_test_pvalue
