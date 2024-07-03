@@ -139,6 +139,7 @@ names(PKDE_A) <- names(SITE_A[1:17])
 save(PKDE_A, file = "data/home_range/pkde/anteater_pkde_A.rda")
 save(PKDE_B, file = "data/home_range/pkde/anteater_pkde_B.rda")
 save(PKDE_C, file = "data/home_range/pkde/anteater_pkde_C.rda")
+
 load("data/home_range/pkde/anteater_pkde_A.rda")
 load("data/home_range/pkde/anteater_pkde_B.rda")
 load("data/home_range/pkde/anteater_pkde_C.rda")
@@ -181,6 +182,7 @@ writeVector(PKDE_B, "data/home_range/shp_pkde/pkde_b",
 writeVector(PKDE_C, "data/home_range/shp_pkde/pkde_c",
             filetype="ESRI Shapefile", level.UD=0.95, level=0.95, overwrite = TRUE)
 
+<<<<<<< HEAD
 
 
 library(sf)
@@ -202,3 +204,5 @@ png(file = "figures/pkde/pkde_c.png", width = 6.86, height = 6, units = "in", re
 plot(SITE_C, UD = PKDE_C)
 title("Site C (MS040)", adj = 0)
 dev.off()
+=======
+>>>>>>> e2d216e06f5a3cd3784840a476e05bc6de0782ff
