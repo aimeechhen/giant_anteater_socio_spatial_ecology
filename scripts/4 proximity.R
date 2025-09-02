@@ -21,7 +21,7 @@ overlap_1_df$proximity_high <- NA
 # this will take a while, days to loop, if R crashes, change the # for the loop number it was on. syntax: for(i in #:nrow(pairwise.df)) 
 
 #Calculate the proximity statistics
-for(i in 1:nrow(overlap_1)){
+for(i in 1:nrow(overlap_1_df$CI)){
   
   # Extract animal indices from columns 'anteater_A' and 'anteater_B'
   ANIMAL_A <- as.character(overlap_1_df[i, 'anteater_A']) # add as.character due to tibble format
@@ -59,7 +59,7 @@ for(i in 1:nrow(overlap_1)){
   overlap_1_df[i, c("proximity_high")] <- PROXIMITY_1[3]
   
   #save results to a csv file
-  write.csv(overlap_1_df, "data/encounter/DATA_proximity_1.csv", row.names = FALSE)
+  # write.csv(overlap_1_df, "data/encounter/DATA_proximity_1.csv", row.names = FALSE)
   
   cat("finished index", i, "\n") # see the loop happening in real time
 }
